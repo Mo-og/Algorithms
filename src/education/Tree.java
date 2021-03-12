@@ -4,12 +4,12 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class Tree {
-    int val;
+    int num;
     Tree leftNode = null;
     Tree rightNode = null;
 
-    public Tree(int val) {
-        this.val = val;
+    public Tree(int num) {
+        this.num = num;
     }
 
     public void add(int val) {
@@ -18,14 +18,14 @@ public class Tree {
 
 
     private void _add(Tree tree, int val) {
-        if(val > tree.val) {
+        if(val > tree.num) {
             if(tree.rightNode == null) {
                 tree.rightNode = new Tree(val);
             }
             else _add(tree.rightNode, val);
         }
 
-        else if(val < tree.val) {
+        else if(val < tree.num) {
             if(tree.leftNode == null) {
                 tree.leftNode = new Tree(val);
             }
@@ -33,12 +33,12 @@ public class Tree {
         }
     }
 
-    public void traverse() {
+    public void goBreadth() {
         Queue<Tree> q = new ArrayDeque<>();
         q.offer(this);
         while(!q.isEmpty()) {
             Tree t = q.poll();
-            System.out.println(t.val);
+            System.out.println(t.num);
             if(t.leftNode != null) {
                 q.offer(t.leftNode);
             }if(t.rightNode != null) {
@@ -54,7 +54,7 @@ public class Tree {
         if (rightNode != null) {
             rightNode.toString(new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb);
         }
-        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(val).append("\n");
+        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(num).append("\n");
         if (leftNode != null) {
             leftNode.toString(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb);
         }
