@@ -7,62 +7,135 @@ public class Tree {
     int num;
     Tree leftNode = null;
     Tree rightNode = null;
+    boolean isFake = false;
+
+    public Tree setFake(boolean fake) {
+        isFake = fake;
+        return this;
+    }
+
+    public boolean isFake() {
+        return isFake;
+    }
 
     public Tree(int num) {
         this.num = num;
     }
 
     public void add(int val) {
-        _add(this, val);
+        add(this, val);
     }
 
-
-    private void _add(Tree tree, int val) {
-        if(val > tree.num) {
-            if(tree.rightNode == null) {
-                tree.rightNode = new Tree(val);
-            }
-            else _add(tree.rightNode, val);
-        }
-
-        else if(val < tree.num) {
-            if(tree.leftNode == null) {
-                tree.leftNode = new Tree(val);
-            }
-            else _add(tree.leftNode, val);
+    private void add(Tree tree, int num) {
+        if (num > tree.num) {
+            if (tree.rightNode == null) {
+                tree.rightNode = new Tree(num);
+            } else add(tree.rightNode, num);
+        } else if (num < tree.num) {
+            if (tree.leftNode == null) {
+                tree.leftNode = new Tree(num);
+            } else add(tree.leftNode, num);
         }
     }
 
-    public void goBreadth() {
-        Queue<Tree> q = new ArrayDeque<>();
-        q.offer(this);
-        while(!q.isEmpty()) {
-            Tree t = q.poll();
-            System.out.println(t.num);
-            if(t.leftNode != null) {
-                q.offer(t.leftNode);
-            }if(t.rightNode != null) {
-                q.offer(t.rightNode);
+    public StringBuilder goBreadth() {
+        Queue<Tree> queue = new ArrayDeque<>();
+        queue.offer(this);
+        StringBuilder s = new StringBuilder();
+        while (!queue.isEmpty()) {
+            Tree tree = queue.poll();
+            s.append(tree.num).append("->");
+            if (tree.leftNode != null) {
+                queue.offer(tree.leftNode);
+            }
+            if (tree.rightNode != null) {
+                queue.offer(tree.rightNode);
             }
         }
+        s.delete(s.length() - 2, s.length());
+        return s;
     }
 
-    public StringBuilder toString(StringBuilder prefix, boolean isTail, StringBuilder sb) {
-        //prefix - времененное хранилище для одной строки дерева
-        //sb постоянное хранилище для всех строк (то есть sb это совокупность префиксов)
-        //если tail = true, то добавляем горизонтальную линию, в ином случае добавляем пробелы к prefix
-        if (rightNode != null) {
-            rightNode.toString(new StringBuilder().append(prefix).append(isTail ? "│   " : "    "), false, sb);
+
+    public StringBuilder getRepresentation() {
+        Queue<Tree> queue = new ArrayDeque<>();
+        StringBuilder s = new StringBuilder();
+        StringBuilder indent;
+        int counter = 0, level = 0, levelTemp, indentTemp, height = getHeight() + 1;
+
+        queue.offer(this);
+
+        //отступы для корня
+        levelTemp = (height - level) * (height - level) / 2;
+        indent = new StringBuilder();
+        while (levelTemp-- > 0)
+            indent.append(" ");
+        if(indent.length()>=4)
+        s.append(indent.substring(0,indent.length()-4));
+        else s.append(indent);
+
+
+        while (!queue.isEmpty()) {
+            Tree tree = queue.poll();
+
+            if (tree.isFake()) {
+                s.append(indent);
+                s.append("[]");
+
+            } else {
+
+                s.append(indent);
+                s.append(String.format("%2d", tree.num));
+                if (tree.leftNode == null)
+                    queue.offer(new Tree(-999999999).setFake(true));
+                else
+                    queue.offer(tree.leftNode);
+                if (tree.rightNode == null)
+                    queue.offer(new Tree(-999999999).setFake(true));
+                else
+                    queue.offer(tree.rightNode);
+            }
+            //новая строка, перерасчёт отступов
+            if (counter == 0) {
+                level++;
+                levelTemp = (height - level) * (height - level) / 2;
+                indent = new StringBuilder();
+                while (levelTemp-- > 0)
+                    indent.append(" ");
+                counter = (int) Math.pow(2, level);
+
+                s.append('\n').append(indent);
+            }
+            counter--;
         }
-        sb.append(prefix).append(isTail ? "└── " : "┌── ").append(num).append("\n");
-        if (leftNode != null) {
-            leftNode.toString(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true, sb);
-        }
-        return sb;
+        return s;
     }
 
-    @Override
-    public String toString() {
-        return this.toString(new StringBuilder(), true, new StringBuilder()).toString();
+    private int getHeight() {
+
+        ArrayDeque<Tree> queue = new ArrayDeque<>();
+        int counter = 0, level = 0, levelTemp = 0;
+        queue.offer(this);
+
+        while (!queue.isEmpty()) {
+            Tree tree = queue.poll();
+            if (!tree.isFake()) {
+                if (tree.leftNode == null)
+                    queue.offer(new Tree(-999999999).setFake(true));
+                else
+                    queue.offer(tree.leftNode);
+                if (tree.rightNode == null)
+                    queue.offer(new Tree(-999999999).setFake(true));
+                else
+                    queue.offer(tree.rightNode);
+            }
+            if (counter == 0) {
+                counter = (int) Math.pow(2, level);
+                level++;
+            }
+            counter--;
+        }
+        return level;
+
     }
 }

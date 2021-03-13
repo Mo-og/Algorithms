@@ -48,6 +48,7 @@ public class Qsort {
                     if (i == endIndex) s.append("[e]");
                     s.append(", ");
                 }
+                if (s.length()>=2)
                 s.delete(s.length() - 2, s.length());
                 s.append("]");
                 System.out.println(s);

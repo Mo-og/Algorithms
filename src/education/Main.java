@@ -38,14 +38,17 @@ public class Main {
 
 */
 
-        Tree t = new Tree(10);
+        /*Tree t = new Tree(10);
         t.add(5);
         t.add(15);
         t.add(3);
         t.add(8);
         t.add(12);
         t.add(18);
+        t.add(1);
+        t.add(4);
+        t.add(0);
         t.goBreadth();
-        System.out.println(t);
+        System.out.println(t.getRepresentation());*/
     }
 }

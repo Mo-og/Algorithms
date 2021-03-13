@@ -14,6 +14,7 @@ class QsortTest {
 
     @RepeatedTest(numTests)
     void sort() {
+        Qsort.setPrintLog(false);
         final int length = 10;
 
         int[] array = new int[length];
@@ -25,6 +26,7 @@ class QsortTest {
         Qsort.sort(array);
         assertArrayEquals(expected, array);
     }
+
     @Test
     void sortUniform() {
         final int length = 100;
